@@ -4,9 +4,12 @@ import TransactionForm from "./components/TransactionForm";
 import TransactionList from "./components/TransactionList";
 import { getTransactions, saveTransactions } from "./utils/storage";
 import { supabase } from "./supabaseClient";
+import ConfirmDeleteModal from "./components/ConfirmDeleteModal";
 
 export default function App() {
   const [transactions, setTransactions] = useState([]);
+  const [showModal, setShowModal] = useState(false);
+  const [transactionToDelete, setTransactionToDelete] = useState(null);
 
   const fetchData = async () => {
     const { data, error } = await supabase
@@ -45,12 +48,47 @@ export default function App() {
     await fetchData();
   };
 
+  const confirmDeleteTransaction = (id) => {
+    setTransactionToDelete(id);
+    setShowModal(true);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!transactionToDelete) return;
+
+    const { error } = await supabase
+      .from("transactions")
+      .delete()
+      .eq("id", transactionToDelete);
+
+    if (error) {
+      console.error("Delete error:", error.message);
+    } else {
+      setTransactions(transactions.filter((t) => t.id !== transactionToDelete));
+    }
+
+    setShowModal(false);
+    setTransactionToDelete(null);
+  };
+
   return (
     <div className="container">
       <h1>Zenspend</h1>
       <BalanceCard transactions={transactions} />
       <TransactionForm onAdd={handleAddTransaction} />
-      <TransactionList transactions={transactions} />
+      <TransactionList
+        transactions={transactions}
+        onDelete={confirmDeleteTransaction}
+      />
+      {showModal && (
+        <ConfirmDeleteModal
+          onConfirm={handleConfirmDelete}
+          onClose={() => {
+            setShowModal(false);
+            setTransactionToDelete(null);
+          }}
+        />
+      )}
     </div>
   );
 }

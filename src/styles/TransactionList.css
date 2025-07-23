@@ -1,0 +1,11 @@
+.delete-button {
+  margin-left: 10px;
+  color: white;
+  cursor: pointer;
+  background-color: red;
+  align-items: right;
+}
+
+.delete-button:hover {
+  background-color: rgb(196, 5, 5);
+}
