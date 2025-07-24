@@ -35,7 +35,15 @@ export default function TransactionForm({ onAdd }) {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form
+      onSubmit={handleSubmit}
+      style={{
+        backgroundColor: "var(--background-color)",
+        padding: "20px",
+        borderRadius: "10px",
+      }}
+    >
+      <h3>Transaction Form</h3>
       <select value={type} onChange={(e) => setType(e.target.value)}>
         <option value={"in"}>Income</option>
         <option value={"out"}>Expense</option>

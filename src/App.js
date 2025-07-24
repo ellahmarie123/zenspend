@@ -35,12 +35,11 @@ export default function App() {
 
     if (error) {
       console.error("Insert error:", error);
-      return; // Exit early if there's an error
+      return;
     }
 
-    // Check if data is not null and has elements
     if (data && data.length > 0) {
-      setTransactions([data[0], ...transactions]); // Safely access data[0]
+      setTransactions([data[0], ...transactions]);
     } else {
       console.warn("No data returned from insert operation.");
     }
@@ -72,14 +71,19 @@ export default function App() {
   };
 
   return (
-    <div className="container">
-      <h1>Zenspend</h1>
-      <BalanceCard transactions={transactions} />
-      <TransactionForm onAdd={handleAddTransaction} />
-      <TransactionList
-        transactions={transactions}
-        onDelete={confirmDeleteTransaction}
-      />
+    <div className="app-container">
+      <div className="left-column">
+        <BalanceCard transactions={transactions} />
+        <TransactionForm onAdd={handleAddTransaction} />
+      </div>
+
+      <div className="right-column">
+        <TransactionList
+          transactions={transactions}
+          onDelete={confirmDeleteTransaction}
+        />
+      </div>
+
       {showModal && (
         <ConfirmDeleteModal
           onConfirm={handleConfirmDelete}
