@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "../../styles/EditTransactionModal.css";
+import ConfirmUpdateModal from "./ConfirmUpdateModal";
 
 export default function EditTransactionModal({
   isOpen,
@@ -11,6 +12,8 @@ export default function EditTransactionModal({
   const [category, setCategory] = useState("");
   const [amount, setAmount] = useState("");
   const [note, setNote] = useState("");
+
+  const [showModal, setShowModal] = useState(false);
 
   const incomeCategories = ["Salary", "Business", "Investments"];
   const expenseCategories = ["Rent", "Groceries", "Utilities", "Wants"];
@@ -26,8 +29,11 @@ export default function EditTransactionModal({
     }
   }, [transaction]);
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  const handleSubmit = () => {
+    if (!category.trim() || isNaN(parseFloat(amount))) {
+      alert("Please provide a valid category and amount.");
+      return;
+    }
 
     const updatedTransaction = {
       ...transaction,
@@ -38,17 +44,8 @@ export default function EditTransactionModal({
       date: new Date().toISOString().split("T")[0],
     };
 
-    if (!category.trim() || isNaN(parseFloat(amount))) {
-      alert("Please provide a valid category and amount.");
-      return;
-    }
-
-    if (typeof onUpdate !== "function") {
-      console.error("onUpdate is not a function", onUpdate);
-      return;
-    }
-
     onUpdate(updatedTransaction);
+    setShowModal(false);
   };
 
   if (!isOpen) return null;
@@ -58,7 +55,6 @@ export default function EditTransactionModal({
       <div className="modal">
         <h2>Edit Transaction</h2>
         <form
-          onSubmit={handleSubmit}
           style={{
             backgroundColor: "var(--background-color)",
             padding: "20px",
@@ -99,7 +95,11 @@ export default function EditTransactionModal({
             onChange={(e) => setNote(e.target.value)}
           />
           <div className="modal-buttons">
-            <button type="submit" className="save-btn" onClick={handleSubmit}>
+            <button
+              type="button"
+              className="save-btn"
+              onClick={() => setShowModal(true)}
+            >
               Save
             </button>
             <button type="button" className="cancel-btn" onClick={onClose}>
@@ -108,6 +108,15 @@ export default function EditTransactionModal({
           </div>
         </form>
       </div>
+
+      {showModal && (
+        <ConfirmUpdateModal
+          onConfirm={handleSubmit}
+          onClose={() => {
+            setShowModal(false);
+          }}
+        />
+      )}
     </div>
   );
 }

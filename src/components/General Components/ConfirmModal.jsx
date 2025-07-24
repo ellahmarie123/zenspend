@@ -48,7 +48,7 @@ const styles = {
   },
 
   confirm: {
-    backgroundColor: "#f44336",
+    backgroundColor: "var(--primary-color)",
     color: "white",
     border: "none",
     padding: "0.5rem 1rem",
@@ -57,7 +57,7 @@ const styles = {
   },
 
   cancel: {
-    backgroundColor: "#ccc",
+    backgroundColor: "var(--tertiary-color)",
     border: "none",
     padding: "0.5rem 1rem",
     borderRadius: "4px",

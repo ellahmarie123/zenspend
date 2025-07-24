@@ -51,3 +51,11 @@
   background-color: #4caf50;
   color: white;
 }
+
+.cancel-btn {
+  background-color: var(--tertiary-color);
+}
+
+.save-btn {
+  background-color: var(--primary-color);
+}
