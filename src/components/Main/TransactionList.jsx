@@ -1,7 +1,7 @@
 import React from "react";
-import "../styles/TransactionList.css";
+import "../../styles/TransactionList.css";
 
-export default function TransactionList({ transactions, onDelete }) {
+export default function TransactionList({ transactions, onDelete, onEdit }) {
   return (
     <div className="transaction-list">
       <h3>Transaction History</h3>
@@ -15,6 +15,9 @@ export default function TransactionList({ transactions, onDelete }) {
           >
             <button className="delete-btn" onClick={() => onDelete(t.id)}>
               🗑️
+            </button>
+            <button className="update-btn" onClick={() => onEdit(t)}>
+              ✏️
             </button>
             <div className="transaction-details">
               [{t.date}] {t.type === "in" ? "+" : "-"} ₱{t.amount.toFixed(2)} -{" "}

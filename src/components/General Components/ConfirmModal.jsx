@@ -1,13 +1,13 @@
 import React from "react";
 
-export default function ConfirmDeleteModal({ onClose, onConfirm }) {
+export default function ConfirmModal({ onClose, onConfirm, message }) {
   return (
     <div style={styles.overlay}>
       <div style={styles.modal}>
-        <h3>Are you sure you want to delete this transactions?</h3>
+        <h3>{message}</h3>
         <div style={styles.buttons}>
           <button onClick={onConfirm} style={styles.confirm}>
-            Delete
+            Confirm
           </button>
           <button onClick={onClose} style={styles.cancel}>
             Cancel
