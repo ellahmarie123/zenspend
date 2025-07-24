@@ -19,7 +19,7 @@ export default function BalanceCard({ transactions }) {
     datasets: [
       {
         data: [income, expense],
-        backgroundColor: ["#d3af37", "#f44336"],
+        backgroundColor: ["#00809d", "#f44336"],
         borderWidth: 1,
       },
     ],
