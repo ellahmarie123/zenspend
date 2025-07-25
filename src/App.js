@@ -5,6 +5,7 @@ import TransactionList from "./components/Main/TransactionList";
 import { supabase } from "./supabaseClient";
 import ConfirmDeleteModal from "./components/Modal/ConfirmDeleteModal";
 import EditTransactionModal from "./components/Modal/EditTransactionModal";
+import TransactionFilter from "./components/Main/TransactionFilter";
 
 export default function App() {
   const [transactions, setTransactions] = useState([]);
@@ -12,6 +13,12 @@ export default function App() {
   const [transactionToDelete, setTransactionToDelete] = useState(null);
   const [editingTransaction, setEditingTransaction] = useState(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [selectedFilterMonth, setSelectedFilterMonth] = useState(
+    new Date().getMonth() + 1
+  );
+  const [selectedFilterYear, setSelectedFilterYear] = useState(
+    new Date().getFullYear()
+  );
 
   const fetchData = async () => {
     const { data, error } = await supabase
@@ -23,7 +30,6 @@ export default function App() {
       console.error("Fetch error:", error);
     } else {
       setTransactions(data);
-      console.log("Transactions loaded:", data);
     }
   };
 
@@ -91,6 +97,8 @@ export default function App() {
         amount: parseFloat(updated.amount),
         note: updated.note.trim(),
         date: new Date().toISOString().split("T")[0],
+        month: updated.month,
+        year: updated.year,
       })
       .eq("id", updated.id)
       .select();
@@ -106,16 +114,26 @@ export default function App() {
     }
   };
 
+  const filteredTransaction = transactions.filter(
+    (t) => t.month === selectedFilterMonth && t.year === selectedFilterYear
+  );
+
   return (
     <div className="app-container">
       <div className="left-column">
-        <BalanceCard transactions={transactions} />
+        <BalanceCard transactions={filteredTransaction} />
         <TransactionForm onAdd={handleAddTransaction} />
       </div>
 
       <div className="right-column">
+        <TransactionFilter
+          selectedFilterMonth={selectedFilterMonth}
+          selectedFilterYear={selectedFilterYear}
+          onMonthChange={setSelectedFilterMonth}
+          onYearChange={setSelectedFilterYear}
+        />
         <TransactionList
-          transactions={transactions}
+          transactions={filteredTransaction}
           onDelete={confirmDeleteTransaction}
           onEdit={handleEditClick}
         />

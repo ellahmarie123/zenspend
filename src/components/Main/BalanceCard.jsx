@@ -53,7 +53,7 @@ const styles = {
     boxShadow: "0 0 10px rgba(0, 0, 0, 0.05)",
     backgroundColor: "#fff",
     textAlign: "center",
-    marginBottom: "20px",
+    marginBottom: "8px",
     backgroundColor: "var(--background-color)",
   },
 

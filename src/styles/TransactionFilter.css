@@ -1,0 +1,30 @@
+.transaction-filter {
+  display: flex;
+  justify-content: right;
+  align-items: center;
+  padding: 1rem;
+  background-color: var(--background-color);
+  border-radius: 4px;
+  margin-bottom: 1.5rem;
+}
+
+.transaction-filter select {
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1rem;
+  flex: 1;
+  margin-left: 8px;
+  margin-right: 8px;
+  background-color: var(--secondary-color);
+}
+
+.transaction-filter select:hover {
+  border-color: var(--primary-color);
+}
+
+.transaction-filter select:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 5px rgba(0, 128, 157, 0.5);
+}
