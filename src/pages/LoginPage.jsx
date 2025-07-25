@@ -1,5 +1,59 @@
-import React from "react";
+import { useState } from "react";
+import { supabase } from "../supabaseClient";
+import { useNavigate } from "react-router-dom";
+import "../styles/LoginPage.css";
 
-export default function Login() {
-  return <h1>Login Page</h1>;
+export default function LoginPage({ setUser }) {
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const navigate = useNavigate();
+
+  const handleChangeUsername = (e) => {
+    setUsername(e.target.value);
+  };
+
+  const handleChangePassword = (e) => {
+    setPassword(e.target.value);
+  };
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+
+    const { data, error } = await supabase
+      .from("users")
+      .select("*")
+      .eq("username", username)
+      .eq("password", password)
+      .single();
+
+    if (error || !data) {
+      setError("Invalid username or password. Try again.");
+    } else {
+      setUser(data);
+      navigate("/");
+    }
+  };
+
+  return (
+    <div className="login-container">
+      <h2>Login</h2>
+      <form onSubmit={handleLogin}>
+        <input
+          type="text"
+          placeholder="Username"
+          value={username}
+          onChange={handleChangeUsername}
+        />
+        <input
+          type="password"
+          placeholder="Password"
+          value={password}
+          onChange={handleChangePassword}
+        />
+        <button type="submit">Log In</button>
+        {error && <p className="error">{error}</p>}
+      </form>
+    </div>
+  );
 }

@@ -7,7 +7,7 @@ import ConfirmDeleteModal from "../components/Modal/ConfirmDeleteModal";
 import EditTransactionModal from "../components/Modal/EditTransactionModal";
 import TransactionFilter from "../components/Main/TransactionFilter";
 
-export default function App() {
+export default function App({ user }) {
   const [transactions, setTransactions] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [transactionToDelete, setTransactionToDelete] = useState(null);
