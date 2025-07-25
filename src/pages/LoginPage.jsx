@@ -38,6 +38,9 @@ export default function LoginPage({ setUser }) {
   return (
     <div className="login-container">
       <h2>Login</h2>
+      <p>
+        Don't have and account? <a href="/signup">Signup Here</a>
+      </p>
       <form onSubmit={handleLogin}>
         <input
           type="text"

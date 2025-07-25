@@ -9,6 +9,7 @@ import MaintenancePage from "./pages/MaintenancePage";
 import AccountPage from "./pages/AccountPage";
 import LoginPage from "./pages/LoginPage";
 import Navbar from "./components/Main/Navbar";
+import SignupPage from "./pages/SignupPage";
 import { useState } from "react";
 
 export default function App() {
@@ -18,6 +19,7 @@ export default function App() {
       <Navbar />
       <Routes>
         <Route path="/login" element={<LoginPage setUser={setUser} />} />
+        <Route path="/signup" element={<SignupPage />} />
         <Route
           path="/"
           element={user ? <MainPage user={user} /> : <Navigate to="/login" />}
