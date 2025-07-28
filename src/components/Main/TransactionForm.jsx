@@ -29,8 +29,6 @@ export default function TransactionForm({ onAdd, userId }) {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    console.log(userId);
-
     const transaction = {
       type,
       category: category.trim(),
