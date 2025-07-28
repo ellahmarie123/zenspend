@@ -5,7 +5,7 @@ export default function ConfirmDeleteModal({ onClose, onConfirm }) {
     <ConfirmModal
       onClose={onClose}
       onConfirm={onConfirm}
-      message="Are you sure you want to delete this transaction?"
+      message="Are you sure you want to delete this item?"
     />
   );
 }

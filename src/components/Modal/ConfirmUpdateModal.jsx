@@ -5,7 +5,7 @@ export default function ConfirmUpdateModal({ onClose, onConfirm }) {
     <ConfirmModal
       onClose={onClose}
       onConfirm={onConfirm}
-      message="Are you sure you want to update this transaction?"
+      message="Are you sure you want to update this item?"
     />
   );
 }

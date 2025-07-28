@@ -3,11 +3,7 @@ import "../../styles/TransactionCategoryList.css";
 import TransactionCategoryForm from "../Maintenance/TransactionCategoryForm";
 import { supabase } from "../../supabaseClient";
 
-export default function TransactionCategoryList({
-  userId,
-  //   onDelete,
-  //   onEdit,
-}) {
+export default function TransactionCategoryList({ userId, onDelete, onEdit }) {
   const [showAddModal, setShowAddModal] = useState(false);
   const [category, setCategory] = useState([]);
 
@@ -65,6 +61,12 @@ export default function TransactionCategoryList({
       <ul className="transaction-category-items">
         {category.map((c) => (
           <li key={c.id} className="transaction-category-item">
+            <button className="delete-btn" onClick={() => onDelete(c.id)}>
+              🗑️
+            </button>
+            <button className="update-btn" onClick={() => onEdit(c)}>
+              ✏️
+            </button>
             <div className="transaction-category-details">
               [{c.type === "in" ? "Income" : "Expense"}] {c.description}
             </div>

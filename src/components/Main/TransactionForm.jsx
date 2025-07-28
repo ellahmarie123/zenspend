@@ -65,6 +65,8 @@ export default function TransactionForm({ onAdd, userId }) {
       user: userId,
     };
 
+    console.log(selectedCategory.id);
+
     if (!transaction.category || isNaN(transaction.amount)) {
       alert("Please provide a valid category and amount.");
       return;
