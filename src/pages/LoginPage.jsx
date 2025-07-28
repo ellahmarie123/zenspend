@@ -2,6 +2,7 @@ import { useState } from "react";
 import { supabase } from "../supabaseClient";
 import { useNavigate } from "react-router-dom";
 import "../styles/LoginPage.css";
+import bcrypt from "bcryptjs";
 
 export default function LoginPage({ setUser }) {
   const [username, setUsername] = useState("");
@@ -24,11 +25,18 @@ export default function LoginPage({ setUser }) {
       .from("users")
       .select("*")
       .eq("username", username)
-      .eq("password", password)
+      // .eq("password", password)
       .single();
 
     if (error || !data) {
       setError("Invalid username or password. Try again.");
+    }
+
+    const passwordMatch = await bcrypt.compare(password, data.password);
+
+    if (!passwordMatch) {
+      setError("Incorrect password. Please try again.");
+      return;
     } else {
       setUser(data);
       navigate("/");

@@ -115,14 +115,17 @@ export default function App({ user }) {
   };
 
   const filteredTransaction = transactions.filter(
-    (t) => t.month === selectedFilterMonth && t.year === selectedFilterYear
+    (t) =>
+      t.month === selectedFilterMonth &&
+      t.year === selectedFilterYear &&
+      t.user === user.id
   );
 
   return (
     <div className="app-container">
       <div className="left-column">
         <BalanceCard transactions={filteredTransaction} />
-        <TransactionForm onAdd={handleAddTransaction} />
+        <TransactionForm onAdd={handleAddTransaction} userId={user.id} />
       </div>
 
       <div className="right-column">

@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import months from "../../utils/monthDropdown";
 import years from "../../utils/yearDropdown";
 
-export default function TransactionForm({ onAdd }) {
+export default function TransactionForm({ onAdd, userId }) {
   const currentMonth = new Date().getMonth();
   const currentYear = new Date().getFullYear();
   const [type, setType] = useState("out");
@@ -29,6 +29,8 @@ export default function TransactionForm({ onAdd }) {
   const handleSubmit = (e) => {
     e.preventDefault();
 
+    console.log(userId);
+
     const transaction = {
       type,
       category: category.trim(),
@@ -37,6 +39,7 @@ export default function TransactionForm({ onAdd }) {
       date: new Date().toISOString().split("T")[0],
       month: Number(selectedMonth?.id),
       year: Number(selectedYear),
+      user: userId,
     };
 
     if (!transaction.category || isNaN(transaction.amount)) {
