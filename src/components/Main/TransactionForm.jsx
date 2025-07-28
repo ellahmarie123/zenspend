@@ -1,20 +1,39 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import months from "../../utils/monthDropdown";
 import years from "../../utils/yearDropdown";
+import { supabase } from "../../supabaseClient";
 
 export default function TransactionForm({ onAdd, userId }) {
   const currentMonth = new Date().getMonth();
   const currentYear = new Date().getFullYear();
   const [type, setType] = useState("out");
-  const [category, setCategory] = useState("");
   const [amount, setAmount] = useState("");
   const [note, setNote] = useState("");
   const [selectedMonth, setSelectedMonth] = useState(months[currentMonth]);
   const [selectedYear, setSelectedYear] = useState(currentYear);
+  const [categoriesData, setCategoriesData] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState([]);
 
-  const incomeCategories = ["Salary", "Business", "Investments"];
-  const expenseCategories = ["Rent", "Groceries", "Utilities", "Wants"];
-  const categories = type === "in" ? incomeCategories : expenseCategories;
+  const fetchCategoryData = async () => {
+    const { data, error } = await supabase
+      .from("transaction_categories")
+      .select("*")
+      .order("created_at", { ascending: false });
+
+    if (error) {
+      console.error("Fetch error:", error);
+    } else {
+      setCategoriesData(data);
+    }
+  };
+
+  useEffect(() => {
+    fetchCategoryData();
+  }, []);
+
+  const incomeCategory = categoriesData.filter((c) => c.type === "in");
+  const expenseCategory = categoriesData.filter((c) => c.type === "out");
+  const categories = type === "in" ? incomeCategory : expenseCategory;
 
   const handleMonthDropdown = (e) => {
     const monthName = e.target.value;
@@ -26,12 +45,18 @@ export default function TransactionForm({ onAdd, userId }) {
     setSelectedYear(e.target.value);
   };
 
+  const handleCategoryDropdown = (e) => {
+    const categoryDesc = e.target.value;
+    const category = categoriesData.find((c) => c.description === categoryDesc);
+    setSelectedCategory(category);
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
 
     const transaction = {
       type,
-      category: category.trim(),
+      category: selectedCategory.id,
       amount: parseFloat(amount),
       note: note.trim(),
       date: new Date().toISOString().split("T")[0],
@@ -46,7 +71,7 @@ export default function TransactionForm({ onAdd, userId }) {
     }
 
     onAdd(transaction);
-    setCategory("");
+    setSelectedCategory("");
     setAmount("");
     setNote("");
     setType("out");
@@ -64,6 +89,7 @@ export default function TransactionForm({ onAdd, userId }) {
       }}
     >
       <h3>Transaction Form</h3>
+      <p>{categoriesData.id}</p>
       <select value={selectedMonth?.name || ""} onChange={handleMonthDropdown}>
         {months.map((month) => (
           <option key={month.id} value={month.name}>
@@ -85,17 +111,12 @@ export default function TransactionForm({ onAdd, userId }) {
         <option value={"out"}>Expense</option>
       </select>
       <select
-        value={category}
-        onChange={(e) => setCategory(e.target.value)}
-        required
-        disabled={!categories.length} // Disable if no categories
+        value={selectedCategory?.description || ""}
+        onChange={handleCategoryDropdown}
       >
-        <option value="" disabled>
-          Select a category
-        </option>
-        {categories.map((cat, index) => (
-          <option key={index} value={cat}>
-            {cat}
+        {categories.map((category) => (
+          <option key={category.id} value={category.description}>
+            {category.description}
           </option>
         ))}
       </select>

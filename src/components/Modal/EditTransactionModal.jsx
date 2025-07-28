@@ -3,6 +3,7 @@ import "../../styles/EditTransactionModal.css";
 import ConfirmUpdateModal from "./ConfirmUpdateModal";
 import months from "../../utils/monthDropdown";
 import years from "../../utils/yearDropdown";
+import { supabase } from "../../supabaseClient";
 
 export default function EditTransactionModal({
   isOpen,
@@ -10,19 +11,36 @@ export default function EditTransactionModal({
   transaction,
   onUpdate,
 }) {
-  const currentYear = new Date().getFullYear();
   const [type, setType] = useState("out");
-  const [category, setCategory] = useState("");
   const [amount, setAmount] = useState("");
   const [note, setNote] = useState("");
   const [selectedMonth, setSelectedMonth] = useState(null);
   const [selectedYear, setSelectedYear] = useState(null);
+  const [categoriesData, setCategoriesData] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState(null);
 
   const [showModal, setShowModal] = useState(false);
 
-  const incomeCategories = ["Salary", "Business", "Investments"];
-  const expenseCategories = ["Rent", "Groceries", "Utilities", "Wants"];
-  const categories = type === "in" ? incomeCategories : expenseCategories;
+  const fetchCategoryData = async () => {
+    const { data, error } = await supabase
+      .from("transaction_categories")
+      .select("*")
+      .order("created_at", { ascending: false });
+
+    if (error) {
+      console.error("Fetch error:", error);
+    } else {
+      setCategoriesData(data);
+    }
+  };
+
+  useEffect(() => {
+    fetchCategoryData();
+  }, []);
+
+  const incomeCategory = categoriesData.filter((c) => c.type === "in");
+  const expenseCategory = categoriesData.filter((c) => c.type === "out");
+  const categories = type === "in" ? incomeCategory : expenseCategory;
 
   useEffect(() => {
     if (transaction) {
@@ -32,12 +50,21 @@ export default function EditTransactionModal({
       }
 
       setType(transaction.type);
-      setCategory(transaction.category);
+      setSelectedCategory(transaction.transaction_categories.description);
       setAmount(transaction.amount);
       setNote(transaction.note || "");
       setSelectedYear(transaction.year);
     }
   }, [transaction]);
+
+  useEffect(() => {
+    if (transaction && categoriesData.length > 0) {
+      const matchedCategory = categoriesData.find(
+        (cat) => cat.id === transaction.category
+      );
+      setSelectedCategory(matchedCategory || categoriesData[0]); // fallback
+    }
+  }, [transaction, categoriesData]);
 
   const handleMonthDropdown = (e) => {
     const monthName = e.target.value;
@@ -50,8 +77,14 @@ export default function EditTransactionModal({
     setSelectedYear(e.target.value);
   };
 
+  const handleCategoryDropdown = (e) => {
+    const categoryDesc = e.target.value;
+    const category = categoriesData.find((c) => c.description === categoryDesc);
+    setSelectedCategory(category);
+  };
+
   const handleSubmit = () => {
-    if (!category.trim() || isNaN(parseFloat(amount))) {
+    if (isNaN(parseFloat(amount))) {
       alert("Please provide a valid category and amount.");
       return;
     }
@@ -59,7 +92,7 @@ export default function EditTransactionModal({
     const updatedTransaction = {
       ...transaction,
       type,
-      category: category.trim(),
+      category: selectedCategory.id,
       amount: parseFloat(amount),
       note: note.trim(),
       date: new Date().toISOString().split("T")[0],
@@ -108,17 +141,12 @@ export default function EditTransactionModal({
             <option value={"out"}>Expense</option>
           </select>
           <select
-            value={category}
-            onChange={(e) => setCategory(e.target.value)}
-            required
-            disabled={!categories.length} // Disable if no categories
+            value={selectedCategory?.description || ""}
+            onChange={handleCategoryDropdown}
           >
-            <option value="" disabled>
-              Select a category
-            </option>
-            {categories.map((cat, index) => (
-              <option key={index} value={cat}>
-                {cat}
+            {categories.map((category) => (
+              <option key={category.id} value={category.description}>
+                {category.description}
               </option>
             ))}
           </select>

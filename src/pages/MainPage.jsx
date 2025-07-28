@@ -23,7 +23,18 @@ export default function App({ user }) {
   const fetchData = async () => {
     const { data, error } = await supabase
       .from("transactions")
-      .select("*")
+      .select(
+        `id, type, 
+        category,
+        amount, 
+        note, 
+        date, 
+        created_at, 
+        month, 
+        year, 
+        user, 
+        transaction_categories (description)`
+      )
       .order("date", { ascending: false });
 
     if (error) {
@@ -93,7 +104,7 @@ export default function App({ user }) {
       .from("transactions")
       .update({
         type: updated.type,
-        category: updated.category.trim(),
+        category: updated.category,
         amount: parseFloat(updated.amount),
         note: updated.note.trim(),
         date: new Date().toISOString().split("T")[0],
@@ -112,6 +123,8 @@ export default function App({ user }) {
       setTransactions(updatedList);
       handleCloseEditModal();
     }
+
+    await fetchData();
   };
 
   const filteredTransaction = transactions.filter(

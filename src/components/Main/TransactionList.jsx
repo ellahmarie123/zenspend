@@ -21,7 +21,8 @@ export default function TransactionList({ transactions, onDelete, onEdit }) {
             </button>
             <div className="transaction-details">
               [{t.date}] {t.type === "in" ? "+" : "-"} ₱{t.amount.toFixed(2)} -{" "}
-              {t.category} {t.note && `(${t.note})`}
+              {t.transaction_categories?.description || ""}{" "}
+              {t.note && `(${t.note})`}
             </div>
           </li>
         ))}
