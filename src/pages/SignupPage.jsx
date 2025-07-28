@@ -2,12 +2,16 @@ import React, { useState } from "react";
 import { supabase } from "../supabaseClient";
 import bcrypt from "bcryptjs";
 import "../styles/SignupPage.css";
+import { useNavigate } from "react-router-dom";
+import ToastComponent from "../components/General Components/ToastComponent";
 
 export default function SignupPage() {
   const [name, setName] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const navigate = useNavigate();
+  const [toastMessage, setToastMessage] = useState(null);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -31,8 +35,10 @@ export default function SignupPage() {
       console.error("Signup Error:", error);
       setError("Username might already exist.");
     } else {
-      alert("Account created successfully!");
-      // Optional: redirect to login page
+      setToastMessage("Account created successfully!");
+      setTimeout(() => {
+        navigate("/login");
+      }, 3000);
     }
   };
   return (
@@ -59,6 +65,8 @@ export default function SignupPage() {
         {error && <p style={{ color: "red" }}>{error}</p>}
         <button type="submit">Sign Up</button>
       </form>
+
+      {toastMessage && <ToastComponent input={toastMessage} />}
     </div>
   );
 }
