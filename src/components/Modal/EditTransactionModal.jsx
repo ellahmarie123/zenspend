@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import "../../styles/EditTransactionModal.css";
+import "../../styles/MaintenanceForm.css";
 import ConfirmUpdateModal from "./ConfirmUpdateModal";
 import months from "../../utils/monthDropdown";
 import years from "../../utils/yearDropdown";

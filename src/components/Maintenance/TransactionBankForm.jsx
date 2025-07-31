@@ -1,35 +1,32 @@
 import React, { useState, useEffect } from "react";
 import "../../styles/MaintenanceForm.css";
-import ConfirmAddCategoryModal from "../Modal/ConfirmAddCategoryModal";
+import ConfirmAddBankModal from "../Modal/ConfirmAddCategoryModal";
 
-export default function TransactionCategoryForm({
+export default function TransactionBankForm({
   isOpen,
   onClose,
   onAdd,
   userId,
 }) {
   const [description, setDescription] = useState("");
-  const [type, setType] = useState("out");
 
   const [showModal, setShowModal] = useState(false);
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    const category = {
+    const bank = {
       description,
-      type,
       created_by: userId,
     };
 
-    if (!category.description || !category.type) {
-      alert("Please provide a valid description and type.");
+    if (!bank.description) {
+      alert("Please provide a valid description.");
       return;
     }
 
-    onAdd(category);
+    onAdd(bank);
     setDescription("");
-    setType("out");
     setShowModal(false);
   };
 
@@ -38,7 +35,7 @@ export default function TransactionCategoryForm({
   return (
     <div className="modal-overlay">
       <div className="modal">
-        <h2>Add Category</h2>
+        <h2>Add Bank</h2>
         <form
           style={{
             backgroundColor: "var(--background-color)",
@@ -46,17 +43,13 @@ export default function TransactionCategoryForm({
             borderRadius: "10px",
           }}
         >
-          <h3>Category Form</h3>
+          <h3>Bank Form</h3>
           <input
             type="text"
             placeholder="Description"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
           />
-          <select value={type} onChange={(e) => setType(e.target.value)}>
-            <option value={"in"}>Income</option>
-            <option value={"out"}>Expense</option>
-          </select>
 
           <div className="modal-buttons">
             <button
@@ -74,7 +67,7 @@ export default function TransactionCategoryForm({
       </div>
 
       {showModal && (
-        <ConfirmAddCategoryModal
+        <ConfirmAddBankModal
           onConfirm={handleSubmit}
           onClose={() => {
             setShowModal(false);

@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from "react";
 import TransactionCategoryList from "../components/Maintenance/TransactionCategoryList";
+import TransactionBankList from "../components/Maintenance/TransactionBankList";
 import { supabase } from "../supabaseClient";
 import ConfirmDeleteModal from "../components/Modal/ConfirmDeleteModal";
 import EditTransactionCategoryModal from "../components/Maintenance/EditTransactionCategoryModal";
+import "../styles/MaintenancePage.css";
 
 export default function App({ user }) {
   const [categories, setCategories] = useState([]);
@@ -28,25 +30,6 @@ export default function App({ user }) {
   useEffect(() => {
     fetchData();
   }, []);
-
-  const handleAddcategory = async (category) => {
-    const { data, error } = await supabase
-      .from("transaction_categories")
-      .insert([category]);
-
-    if (error) {
-      console.error("Insert error:", error);
-      return;
-    }
-
-    if (data && data.length > 0) {
-      setCategories([data[0], ...categories]);
-    } else {
-      console.warn("No data returned from insert operation.");
-    }
-
-    await fetchData();
-  };
 
   const confirmDeleteTransaction = (id) => {
     setItemToDelete(id);
@@ -106,9 +89,14 @@ export default function App({ user }) {
   };
 
   return (
-    <div className="app-container">
+    <div className="app-maintenance-container ">
       <div className="maintenance-item">
         <TransactionCategoryList
+          userId={user.id}
+          onDelete={confirmDeleteTransaction}
+          onEdit={handleEditClick}
+        />
+        <TransactionBankList
           userId={user.id}
           onDelete={confirmDeleteTransaction}
           onEdit={handleEditClick}

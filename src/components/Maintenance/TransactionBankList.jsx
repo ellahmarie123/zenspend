@@ -1,22 +1,22 @@
 import React, { useState, useEffect } from "react";
 import "../../styles/MaintenanceList.css";
-import TransactionCategoryForm from "../Maintenance/TransactionCategoryForm";
+import TransactionBankForm from "./TransactionBankForm";
 import { supabase } from "../../supabaseClient";
 
-export default function TransactionCategoryList({ userId, onDelete, onEdit }) {
+export default function TransactionBankList({ userId, onDelete, onEdit }) {
   const [showAddModal, setShowAddModal] = useState(false);
-  const [category, setCategory] = useState([]);
+  const [bank, setBank] = useState([]);
 
   const fetchData = async () => {
     const { data, error } = await supabase
-      .from("transaction_categories")
+      .from("transaction_banks")
       .select("*")
       .order("created_at", { ascending: false });
 
     if (error) {
       console.error("Fetch error:", error);
     } else {
-      setCategory(data);
+      setBank(data);
     }
   };
 
@@ -32,10 +32,10 @@ export default function TransactionCategoryList({ userId, onDelete, onEdit }) {
     setShowAddModal(false);
   };
 
-  const handleAddCategory = async (category) => {
+  const handleAddBank = async (bank) => {
     const { data, error } = await supabase
-      .from("transaction_categories")
-      .insert([category]);
+      .from("transaction_banks")
+      .insert([bank]);
 
     if (error) {
       console.error("Insert error:", error);
@@ -43,7 +43,7 @@ export default function TransactionCategoryList({ userId, onDelete, onEdit }) {
     }
 
     if (data && data.length > 0) {
-      setCategory([data[0], ...category]);
+      setBank([data[0], ...bank]);
     } else {
       console.warn("No data returned from insert operation.");
     }
@@ -54,30 +54,28 @@ export default function TransactionCategoryList({ userId, onDelete, onEdit }) {
 
   return (
     <div className="maintenance-list">
-      <h3>Transaction Category</h3>
-      <button className="maintenance-add-button" onClick={handleAddButton}>
+      <h3>Transaction Bank</h3>
+      <button className="maint-add-button" onClick={handleAddButton}>
         Add
       </button>
       <ul className="maintenance-items">
-        {category.map((c) => (
-          <li key={c.id} className="maintenance-item">
-            <button className="delete-btn" onClick={() => onDelete(c.id)}>
+        {bank.map((b) => (
+          <li key={b.id} className="maintenance-item">
+            <button className="delete-btn" onClick={() => onDelete(b.id)}>
               🗑️
             </button>
-            <button className="update-btn" onClick={() => onEdit(c)}>
+            <button className="update-btn" onClick={() => onEdit(b)}>
               ✏️
             </button>
-            <div className="maintenance-details">
-              [{c.type === "in" ? "Income" : "Expense"}] {c.description}
-            </div>
+            <div className="maintenance-details">{b.description}</div>
           </li>
         ))}
       </ul>
 
-      <TransactionCategoryForm
+      <TransactionBankForm
         isOpen={showAddModal}
         onClose={handleCloseAddModal}
-        onAdd={handleAddCategory}
+        onAdd={handleAddBank}
         userId={userId}
       />
     </div>

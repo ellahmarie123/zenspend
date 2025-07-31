@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import "../../styles/TransactionCategoryForm.css";
+import "../../styles/MaintenanceForm.css";
 import ConfirmUpdateModal from "../Modal/ConfirmUpdateModal";
 
 export default function EditTransactionCategoryModal({
